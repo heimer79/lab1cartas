@@ -17,64 +17,64 @@ let puntosJugador = 0,
 
 // Referencias del HTML
 const btnPedir = document.querySelector( '#btn-pedir' ); 
-const puntosHTML = document.querySelectorAll( 'small')
+const btnDetener = document.querySelector("#btn-detener");
+
+const divCartasJugador = document.querySelector("#jugador-cartas");
+const divCartasComputadora = document.querySelector("#computadora-cartas");
+const puntosHTML = document.querySelectorAll("small");
 
 // esta funciion crea una nuena baraja
 const crearDeck = () => {
-
-    for (let i = 2; i <= 10; i++) {
-
-        for (let tipo of tipos) {
-            deck.push(i + tipo)
-        }
-    }
-
+  for (let i = 2; i <= 10; i++) {
     for (let tipo of tipos) {
-        for (let esp of especiales) {
-            deck.push(esp + tipo)
-        }
+      deck.push(i + tipo);
     }
+  }
 
-    // console.log(JSON.stringify(deck))
+  for (let tipo of tipos) {
+    for (let esp of especiales) {
+      deck.push(esp + tipo);
+    }
+  }
 
-    // console.log(deck);
-    deck = _.shuffle(deck);
-    // console.log(deck);
+  // console.log(JSON.stringify(deck))
 
-
-}
+  // console.log(deck);
+  deck = _.shuffle(deck);
+  // console.log(deck);
+};
 
 crearDeck();
 
 // Esta funcion me permite tomar una carta
 
 const pedirCarta = () => {
+  if (deck.length === 0) {
+    throw "No hay cartas en el deck"; //throw sirve para mostrar el error
+  }
 
-    if (deck.length === 0) {
-        throw 'No hay cartas en el deck'; //throw sirve para mostrar el error
-    }
+  const carta = deck.pop();
 
-    const carta = deck.pop();
-
-    // console.log(deck)
-    // console.log(carta) // debe ser de la baraja
-    return carta;
-}
+  // console.log(deck)
+  // console.log(carta) // debe ser de la baraja
+  return carta;
+};
 
 // deck = [];
 // pedirCarta();
 
-
 const valorCarta = (carta) => {
-    const valor = carta.substring(0, carta.length - 1);
+  const valor = carta.substring(0, carta.length - 1);
 
-    return (isNaN(valor)) ?
-        (valor === 'A') ? 11 : 10 :
-        puntos = parseInt(valor, 10)
+  return isNaN(valor)
+    ? valor === "A"
+      ? 11
+      : 10
+    : (puntos = parseInt(valor, 10));
 
-    // EL siguiente codigo es muy largo el anterior con el ternario resume mas 
-    // let puntos = 0;
-    /* console.log({ valor });
+  // EL siguiente codigo es muy largo el anterior con el ternario resume mas
+  // let puntos = 0;
+  /* console.log({ valor });
     // 2 =2  10 = 10, 3 = 3
     if (isNaN(valor)) {
         // console.log('No es un numero')
@@ -86,20 +86,62 @@ const valorCarta = (carta) => {
     }
 
     console.log(puntos) */
-}
+};
 
+//valorCarta(pedirCarta());
+// turno de la computadora
 
-valorCarta( pedirCarta() );
+const turnoComputadora = (puntosMinimos) => {
+  do {
+    const carta = pedirCarta();
+    puntosComputadora = puntosComputadora + valorCarta(carta);
+    puntosHTML[1].innerText = puntosComputadora;
 
+    // crear mi imagen de la carta
+    const imgCarta = document.createElement("img");
+    imgCarta.src = `assets/cartas/${carta}.png`;
+    imgCarta.classList.add("carta");
+    divCartasComputadora.append(imgCarta);
+
+    if (puntosMinimos > 21) {
+      break;
+    }
+  } while (puntosComputadora < puntosMinimos && puntosMinimos <= 21);
+};
 
 // eventos
 
-btnPedir.addEventListener( 'click', () =>{
-    const carta = pedirCarta();
+btnPedir.addEventListener("click", () => {
+  const carta = pedirCarta();
 
-    puntosJugador = puntosJugador + valorCarta( carta );
-    puntosHTML[ 0 ].innerText = puntosJugador;
+  puntosJugador = puntosJugador + valorCarta(carta);
 
-    
+  puntosHTML[0].innerText = puntosJugador;
 
-})
+  // crear mi imagen de la carta
+  const imgCarta = document.createElement("img");
+  imgCarta.src = `assets/cartas/${carta}.png`;
+  imgCarta.classList.add("carta");
+  divCartasJugador.append(imgCarta);
+
+  if (puntosJugador > 21) {
+    console.warn("lo siento, perdiste");
+    btnPedir.disabled = true;
+    btnDetener.disabled = true;
+    turnoComputadora(puntosJugador);
+  } else if (puntosJugador === 21) {
+    console.warn("21 vas bien");
+    btnPedir.disabled = true;
+    btnDetener.disabled = true;
+    turnoComputadora(puntosJugador);
+  }
+});
+
+/* turnoComputadora(12); */
+
+btnDetener.addEventListener("click", () => {
+  btnPedir.disabled = true;
+  btnDetener.disabled = true;
+
+  turnoComputadora(puntosJugador);
+});
