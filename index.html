@@ -22,15 +22,19 @@
 		<div class="row mt-2">
 			<div id="divBotones" class="col text-center">
 				<button id="btn-nuevo" class="btn btn-danger">Nuevo Juego</button>
-				<button id="btn-pedir" class="btn btn-primary">Pedir Carta</button>
-				<button id="btn-detener" class="btn btn-primary">Detener</button>
+				<button id="btn-pedir" disabled="disabled" class="btn btn-primary">
+					Pedir Carta
+				</button>
+				<button id="btn-detener" disabled="disabled" class="btn btn-primary">
+					Detener
+				</button>
 			</div>
 		</div>
 
 		<div class="row container">
 			<div class="col">
 				<h1>Jugador 1 - <small>0</small></h1>
-				<div id="jugador-cartas">
+				<div id="jugador-cartas" class="divCartas">
 					<!-- <img class="carta" alt="" src="assets/cartas/2C.png" /> -->
 				</div>
 			</div>
@@ -39,7 +43,7 @@
 		<div class="row container mt-2">
 			<div class="col">
 				<h1>Computadora - <small>0</small></h1>
-				<div id="computadora-cartas">
+				<div id="computadora-cartas" class="divCartas">
 					<!-- <img class="carta" alt="" src="assets/cartas/3C.png" /> -->
 				</div>
 			</div>
@@ -47,5 +51,14 @@
 
 		<script src="assets/js/underscore-umd-min.js"></script>
 		<script src="assets/js/juego.js"></script>
+
+		<script>
+			// inicializarJuego();
+			console.log(miModulo);
+
+			document.querySelector('#btn-nuevo').addEventListener('click', () => {
+				miModulo.nuevoJuego();
+			});
+		</script>
 	</body>
 </html>
